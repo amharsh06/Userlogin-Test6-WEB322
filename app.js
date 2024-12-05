@@ -1,17 +1,18 @@
 const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const authRouter = require('./api/auth'); 
+const helmet = require('helmet');
+const path = require('path');
+const authRoutes = require('./routes/auth');
 
 const app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
 
-app.use(authRouter);  
+app.use(helmet());
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
-app.get('/', (req, res) => {
-  res.send('Welcome to the Express app deployed on Vercel!');
-});
 
-module.exports = app;
+app.use('/', authRoutes);
+
+
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}`));
